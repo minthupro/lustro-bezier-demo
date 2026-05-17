@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lustro TM-624 — cubic-bezier Demo</title>
+  <!-- Template: https://www.templatemo.com/tm-624-lustro -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=JetBrains+Mono:wght@400&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --silk: cubic-bezier(0.19, 1, 0.22, 1);
+      --duration: 0.9s;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #f0ede8;
+      font-family: 'Cormorant Garamond', serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      overflow: hidden;
+    }
+
+    /* ── SLIDESHOW ── */
+    .slideshow {
+      position: relative;
+      width: 700px;
+      height: 380px;
+      background: #111;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      padding: 48px;
+    }
+
+    .slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 60%);
+      z-index: 1;
+    }
+
+    .slide-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform var(--duration) var(--silk),
+                  opacity  var(--duration) var(--silk);
+    }
+
+    /* slide backgrounds */
+    .slide:nth-child(1) .slide-bg { background-color: #1a2a3a; background-image: radial-gradient(ellipse at 70% 30%, #2a4a6a 0%, #0a1520 70%); }
+    .slide:nth-child(2) .slide-bg { background-color: #2a1a1a; background-image: radial-gradient(ellipse at 30% 60%, #5a2a2a 0%, #100808 70%); }
+    .slide:nth-child(3) .slide-bg { background-color: #1a2a1a; background-image: radial-gradient(ellipse at 60% 40%, #2a4a2a 0%, #081008 70%); }
+    .slide:nth-child(4) .slide-bg { background-color: #1a1a2a; background-image: radial-gradient(ellipse at 50% 50%, #2a2a5a 0%, #08080f 70%); }
+
+    .slide-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #0a0a0a;
+      background: #f0ede8;
+      text-decoration: none;
+      padding: 13px 28px;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+      transition: background 0.4s var(--silk), gap 0.4s var(--silk);
+    }
+    .slide-link:hover {
+      background: #ffffff;
+      gap: 16px;
+    }
+    .slide-link::after {
+      content: '↗';
+      font-size: 14px;
+      display: inline-block;
+      transition: transform 0.4s var(--silk);
+    }
+    .slide-link:hover::after {
+      transform: translate(2px, -2px);
+    }
+
+    /* ── SLIDE CAPTION ── */
+    .slide-caption {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Each child starts hidden and shifted down */
+    .slide-caption > * {
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+        opacity   var(--duration) var(--silk),
+        transform var(--duration) var(--silk);
+    }
+
+    /* Stagger delays applied only on active state (see below) */
+
+    /* When slide is active, children animate in */
+    .slide.is-active .slide-caption > * {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .slide-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: #aaa;
+      text-transform: uppercase;
+    }
+
+    .slide-title {
+      font-size: 42px;
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+
+    .slide-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: #c8c4be;
+      letter-spacing: 0.03em;
+    }
+
+    /* Slides start hidden */
+    .slide { opacity: 0; pointer-events: none; transition: opacity 0.6s var(--silk); }
+    .slide.is-active { opacity: 1; pointer-events: auto; }
+
+    /* Only apply stagger delay when animating IN (not when hiding) */
+    .slide.is-active .slide-caption > *:nth-child(1) { transition-delay: 0.05s; }
+    .slide.is-active .slide-caption > *:nth-child(2) { transition-delay: 0.18s; }
+    .slide.is-active .slide-caption > *:nth-child(3) { transition-delay: 0.30s; }
+    .slide.is-active .slide-caption > *:nth-child(4) { transition-delay: 0.42s; }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .btn {
+      background: none;
+      border: 1px solid #333;
+      color: #f0ede8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      cursor: pointer;
+      transition: background 0.3s var(--silk), border-color 0.3s var(--silk);
+    }
+    .btn:hover { background: #1e1e1e; border-color: #666; }
+
+    .counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #555;
+      letter-spacing: 0.05em;
+      min-width: 52px;
+      text-align: center;
+    }
+
+    /* ── EASING LABEL ── */
+    .easing-note {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #444;
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slideshow">
+    <div class="slide is-active">
+      <div class="slide-bg"></div>
+      <div class="slide-caption">
+        <span class="slide-label">01 / Architecture</span>
+        <h2 class="slide-title">Form Follows<br>Silence</h2>
+        <p class="slide-sub">Brutalist concrete, softened by light</p>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="slide-bg"></div>
+      <div class="slide-caption">
+        <span class="slide-label">02 / Interior</span>
+        <h2 class="slide-title">Warmth in<br>Every Corner</h2>
+        <p class="slide-sub">Curated textures, considered space</p>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="slide-bg"></div>
+      <div class="slide-caption">
+        <span class="slide-label">03 / Landscape</span>
+        <h2 class="slide-title">Where Earth<br>Meets Sky</h2>
+        <p class="slide-sub">Organic shapes in structured terrain</p>
+      </div>
+    </div>
+
+    <div class="slide slide--promo">
+      <div class="slide-bg"></div>
+      <div class="slide-caption">
+        <span class="slide-label">04 / Lustro TM-624</span>
+        <h2 class="slide-title">Get This<br>Template Free</h2>
+        <p class="slide-sub">Vanilla JS slideshow · silk cubic-bezier easing<br>stagger reveals · mobile-ready · no frameworks</p>
+        <a class="slide-link" href="https://templatemo.com/tm-624-lustro-slideshow" target="_blank" rel="nofollow">Download on TemplateMo ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="prev">← Prev</button>
+    <span class="counter" id="counter">01 / 04</span>
+    <button class="btn" id="next">Next →</button>
+  </div>
+
+  <span class="easing-note">cubic-bezier(0.19, 1, 0.22, 1) — silk easing</span>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const counter = document.getElementById('counter');
+    let current = 0;
+
+    function goTo(index) {
+      const outgoing = slides[current];
+      current = (index + slides.length) % slides.length;
+      const incoming = slides[current];
+
+      // Hide outgoing
+      outgoing.classList.remove('is-active');
+
+      // Reset incoming caption children instantly (no transition)
+      incoming.querySelectorAll('.slide-caption > *').forEach(el => {
+        el.style.transition = 'none';
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(28px)';
+      });
+
+      // Double rAF: forces browser to paint the reset state before animating
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          incoming.querySelectorAll('.slide-caption > *').forEach(el => {
+            el.style.transition = '';
+            el.style.opacity = '';
+            el.style.transform = '';
+          });
+          incoming.classList.add('is-active');
+          counter.textContent =
+            String(current + 1).padStart(2, '0') + ' / ' +
+            String(slides.length).padStart(2, '0');
+        });
+      });
+    }
+
+    // Trigger first slide caption animation on load
+    const firstChildren = slides[0].querySelectorAll('.slide-caption > *');
+    firstChildren.forEach(el => {
+      el.style.transition = 'none';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(28px)';
+    });
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        firstChildren.forEach(el => {
+          el.style.transition = '';
+          el.style.opacity = '';
+          el.style.transform = '';
+        });
+      });
+    });
+
+    document.getElementById('next').addEventListener('click', () => goTo(current + 1));
+    document.getElementById('prev').addEventListener('click', () => goTo(current - 1));
+  </script>
+</body>
+</html>
