@@ -13,7 +13,7 @@ on TemplateMo.
 
 ## Live Demo
 
-[View on GitHub Pages](https://yourusername.github.io/lustro-bezier-demo)
+[View on GitHub Pages](https://minthupro.github.io/lustro-bezier-demo)
 
 ## Free Template
 
